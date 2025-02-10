@@ -22,7 +22,7 @@ Arena *ArenaInit(size_t size) {
     return NULL;
   }
 
-  arena->buffer = buffer;
+  arena->memory = buffer;
   arena->offset = 0;
   arena->size = size;
 
@@ -42,23 +42,23 @@ void *ArenaAlloc(Arena *arena, size_t size) {
       new_size *= 2;
     }
 
-    void *new_buffer = realloc(arena->buffer, new_size);
+    void *new_buffer = realloc(arena->memory, new_size);
 
     if (!new_buffer) {
       return NULL;
     }
 
-    arena->buffer = new_buffer;
+    arena->memory = new_buffer;
     arena->size = new_size;
   }
 
-  void *ptr = (char *)arena->buffer + aligned_offset;
+  void *ptr = (char *)arena->memory + aligned_offset;
   arena->offset = aligned_offset + size;
 
   return ptr;
 }
 
 void ArenaFree(Arena *arena) {
-  free(arena->buffer);
+  free(arena->memory);
   free(arena);
 }
